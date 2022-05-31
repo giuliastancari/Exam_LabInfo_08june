@@ -22,4 +22,4 @@ eng_df <- my_df %>% filter(lang == "en")
 my_df %>% count(author.username, sort = T)
 
 #4.Filter by username
-user_df <- my_df %>% filter(author.username == "HarryPotterEnth")
+user_df <- my_df %>% filter(author.username == "lens3yed")
