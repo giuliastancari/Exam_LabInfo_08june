@@ -1,0 +1,193 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "SA_VSM.ipynb",
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Sentiment Dictionaries from VSMs\n",
+        "\n",
+        "This script allows us to create our own Sentiment Dictionary using Vector Space Models"
+      ],
+      "metadata": {
+        "id": "RFe3xDyK6px1"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### **1. Preparation**\n",
+        "\n",
+        "Firstly we need to download the model.  \n",
+        "You can select any model from here: https://fasttext.cc/docs/en/crawl-vectors.html"
+      ],
+      "metadata": {
+        "id": "9wv7zBLw64I_"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "zfbBGs-35NI5"
+      },
+      "outputs": [],
+      "source": [
+        "import os\n",
+        "import gensim\n",
+        "import urllib.request\n",
+        "import os.path\n",
+        "import pandas\n",
+        "import numpy as np\n",
+        "import scipy.stats as stats"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Here we download the model\n",
+        "#We need to put the URL and filename according to the model we want \n",
+        "#Here we download the Thai model, named \"cc.it.300.vec.gz\"\n",
+        "\n",
+        "!wget \"https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.th.300.vec.gz\"\n",
+        "!gunzip cc.th.300.vec.gz"
+      ],
+      "metadata": {
+        "id": "5s4E6zBQ5rb-"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#We name the file according to the model you downloaded \n",
+        "\n",
+        "filename = 'cc.th.300.vec'\n",
+        "my_model = gensim.models.KeyedVectors.load_word2vec_format(filename, binary=False)"
+      ],
+      "metadata": {
+        "id": "nfFntLbU5Srw"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#### **2. Prepare SA lexicon**\n",
+        "\n",
+        "Here you need to define the \"seed words\" for the lexicon.Here we test it with two dimensions, \"happy\" and \"sad\"."
+      ],
+      "metadata": {
+        "id": "mvZBmncz8dL5"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "happy_labels = ['มีความสุข', 'เชิงบวก', 'ตื่นเต้น', 'ร่าเริง' ] #I put 'happy', 'positiv', 'excited' and 'cheerful'\n",
+        "sad_labels = ['เศร้า', 'ขอโทษ', 'หดหู่', 'เก็บตัว'] #I put sad, sorry, depressed, introvert\n",
+        "\n",
+        "all_words = list(my_model.vocab.keys())"
+      ],
+      "metadata": {
+        "id": "n6Uyw3Dx80Lv"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "happy_ordered_words = my_model.most_similar(positive = happy_labels, topn = len(all_words))\n",
+        "sad_ordered_words = my_model.most_similar(positive = sad_labels, topn = len(all_words))"
+      ],
+      "metadata": {
+        "id": "S0hEW4UX9N06"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Happy Labels\n",
+        "happy_words = []\n",
+        "happy_value = []\n",
+        "\n",
+        "for my_tuple in happy_ordered_words:\n",
+        "  happy_words.append(my_tuple[0])\n",
+        "  happy_value.append(my_tuple[1])\n",
+        "\n",
+        "#Sad Labels\n",
+        "sad_words = []\n",
+        "sad_value = []\n",
+        "\n",
+        "for my_tuple in sad_ordered_words:\n",
+        "  sad_words.append(my_tuple[0])\n",
+        "  sad_value.append(my_tuple[1])\n"
+      ],
+      "metadata": {
+        "id": "iYLHL44X9jO5"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Happy labels\n",
+        "happy_value = np.array(happy_value)\n",
+        "happy_value = stats.zscore(happy_value)\n",
+        "\n",
+        "happy_df = pandas.DataFrame(list(zip(happy_words, happy_value)), \n",
+        "               columns =['word', 'happy'])\n",
+        "\n",
+        "happy_df = happy_df.sort_values('word', ascending=True)\n",
+        "\n",
+        "\n",
+        "#Sad labels\n",
+        "sad_value = np.array(sad_value)\n",
+        "sad_value = stats.zscore(sad_value)\n",
+        "\n",
+        "sad_df = pandas.DataFrame(list(zip(sad_words, sad_value)), \n",
+        "               columns =['word', 'sad'])\n",
+        "\n",
+        "sad_df = sad_df.sort_values('word', ascending=True)\n"
+      ],
+      "metadata": {
+        "id": "F-Tm3117-F5g"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#We can now save all to an unique dataframe\n",
+        "sa_df = happy_df.merge(sad_df, how = 'inner', on = ['word'])\n",
+        "\n",
+        "sa_df.to_csv('my_SA_dictionary.csv', index=False)"
+      ],
+      "metadata": {
+        "id": "fJ5eVBSK-tmq"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
