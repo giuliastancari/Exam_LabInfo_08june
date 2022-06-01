@@ -23,3 +23,10 @@ my_df %>% count(author.username, sort = T)
 
 #4.Filter by username
 user_df <- my_df %>% filter(author.username == "lens3yed")
+
+#5.Count tweets per date of creation
+my_df %>% count(created_at)
+
+#6.Filter by date of creation
+date_df <- my_df %>% filter(created_at == "2022-05-31T17:40:05.000Z")
+date2_df <- my_df %>% filter(created_at == "2022-05-31T17:39:17.000Z")
