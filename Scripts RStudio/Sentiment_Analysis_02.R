@@ -10,7 +10,7 @@ library(reshape2)
 library(tidyverse)
 
 #We firstly load the corpus
-load("CSV/TwitterforSA.RData")
+load("CSV&Files/TwitterforSA.RData")
 
 #Let's now find emotional values for one text
 get_nrc_sentiment(my_df$text[1])
