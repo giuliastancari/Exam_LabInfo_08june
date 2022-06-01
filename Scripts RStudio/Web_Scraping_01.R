@@ -5,7 +5,7 @@ install.packages("tidyverse")
 library(tidyverse)
 
 #Read the csv into a dataframe and explore it
-my_df <- read.csv("CSV/tweets.csv", stringsAsFactors = F)
+my_df <- read.csv("CSV&Files/tweets.csv", stringsAsFactors = F)
 View(my_df)
 
 
