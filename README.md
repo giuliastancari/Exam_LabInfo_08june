@@ -4,4 +4,3 @@ The exam will be dedicated on the analysis of the tweets, that, as main topic, h
 The project, called **Analysis of Mental Health's Tweets**, will be divide in several parts 
 - Web Scraping, in order to automatically download data from Twitter to create Datsets for the analysis
 - Sentiment Analysis of the tweets
-- Topic Modelling
