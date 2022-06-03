@@ -8,10 +8,10 @@ library(tidyverse)
 library(syuzhet)
 
 #We then read the thai twitter file into the dataframe
-my_df <- read.csv("CSV&Files/tweets.csv", row.names = 1, stringsAsFactors = F)
+my_df <- read.csv("CSV&Files/tweets.csv", stringsAsFactors = F)
 
-#And we select just thai tweets
-my_df <- my_df %>% filter(lang == "th")
+#And we select just spanish tweets
+my_df <- my_df %>% filter(lang == "es")
 
 #We need to convert date of creation into date/time format
 my_df$created_at[1]
@@ -26,20 +26,16 @@ class(my_df$created_at[1])
 #We just keep just what is relevant
 my_df <- my_df[,c("text", "created_at")]
 
-#And to simplify things, we reduce the dataframe to a random selection of 1000 tweets
-my_df <- my_df[sample(1:length(my_df$text), 1000),]
-rownames(my_df) <- 1:length(my_df$text)
-
 #The dataset preparation is finally complete now
 
 #We need to find models in the resources folder
 list.files(path = "resources/udpipe", pattern = ".udpipe", full.names = T)
 
 #We need to download a udpipe model for thai language
-udpipe_download_model(language = "thai", model_dir = "resources/udpipe")
+udpipe_download_model(language = "es", model_dir = "resources/udpipe")
 
-#We load the (thai) model
-udmodel <- udpipe_load_model(file = "resources/udpipe/thai-isdt-ud-2.4-190531.udpipe")
+#We load the (spanish) model
+udmodel <- udpipe_load_model(file = "resources/udpipe/spanish-isdt-ud-2.4-190531.udpipe")
 
 #Then, we process the text
 text_annotated <- udpipe(object = udmodel, x = my_df$text, doc_id = rownames(my_df), trace = T)
@@ -47,7 +43,7 @@ text_annotated <- udpipe(object = udmodel, x = my_df$text, doc_id = rownames(my_
 #Finally, now everything is ready to perform (multi-language) SA!
 
 #We need to read OpeNER from resources folder
-my_dictionary <- read.csv("resources/sentiment_dictionaries/OpeNER_ita.csv", stringsAsFactors = F)
+my_dictionary <- read.csv("resources/sentiment_dictionaries/OpeNER_es.csv", stringsAsFactors = F)
 View(my_dictionary)
 
 #OpeNER includes values per lemma in lowercase, so we need to lowercase the lemmas in our text and perform the analysis on them
