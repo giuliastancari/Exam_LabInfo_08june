@@ -1,3 +1,5 @@
+#Sentiment Analysis - Part 1
+
 #We will makes few procedure to prepare the tweets for the Sentiment Analysis
 
 #First of all, we install and load packages for language recognition
@@ -11,14 +13,14 @@ all_twitter_files <- list.files(path = "CSV&Files", pattern = "tweets.", full.na
 #We read the file to prepare the dataframe
 my_df <- read.csv(all_twitter_files)
 
-#We filter the datas and keep just text and lang
+#We filter the datas and keep just the texts and the languages
 my_df <- my_df[,c("text", "lang")]
 my_df$search <- gsub(pattern = "CSV&Files/tweets", replacement = "", all_twitter_files)
 
-#We need to exclude the "NA" tweets (probably due to errors in the scraping)
+#We need to exclude the "NA" tweets (they were created probably due to errors in the scraping)
 my_df <- my_df[!is.na(my_df$text),]
 
-#We filter and reduce the languages to just engl
+#We filter and reduce the languages to just english
 my_df %>% count(lang)
 my_df <- my_df %>% filter(lang == "en")
 

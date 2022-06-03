@@ -1,5 +1,7 @@
 #Web Scraping + Upload File CSV
 
+#The first thing we need to do before all the analysis is Web Scraping
+
 #First of all, we need to download the library tydyverse and call it
 install.packages("tidyverse")
 library(tidyverse)
@@ -7,7 +9,6 @@ library(tidyverse)
 #Read the csv into a dataframe and explore it
 my_df <- read.csv("CSV&Files/tweets.csv", stringsAsFactors = F)
 View(my_df)
-
 
 #We can see all available metadata and do a series of analysis on them
 colnames(my_df)

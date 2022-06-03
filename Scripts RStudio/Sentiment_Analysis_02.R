@@ -1,3 +1,5 @@
+#Sentiment Analysis - Part 2
+
 #We want now to analyse basic emotions in tweets
 
 #First of all, we need to install and load the packages for sentiment analysis
@@ -9,7 +11,7 @@ library(reshape2)
 
 library(tidyverse)
 
-#We firstly load the corpus
+#We firstly load the corpus (created in Part 1)
 load("CSV&Files/TwitterforSA.RData")
 
 #Let's now find emotional values for one text
@@ -25,6 +27,7 @@ for(i in 1:length(my_df$text)){
     print(i/length(my_df$text))
   
 }
+#It will take some time
 
 #We then normalize per text length and again iterate on all tweets
 my_df$length <- lengths(strsplit(my_df$text, "\\W"))
