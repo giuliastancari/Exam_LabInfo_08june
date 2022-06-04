@@ -1,4 +1,4 @@
-#Networks
+#Networks 
 
 #Here, we want to make some analysises on the tweets, in order to create networks through Gephi
 #The nodes are the tweets or the users
@@ -42,7 +42,6 @@ nodes_df <- rbind(tweets_df, users_df)
 #2. Build edges table
 
 authoring_df <- data.frame(Source = my_df$author_id, Target = my_df$id, Weight = 1, Type = "directed")
-
 retweeting_df <- data.frame(Source = my_df$id, Target = my_df$referenced_tweets.retweeted, Weight = 1, Type = "directed")
 
 #3. Remove NAs (i.e. the tweets that are not retweets)
